@@ -12,6 +12,7 @@
         id="inputLarge"
         aria-describedby="toDoHelp"
         v-model="newTodo"
+        @keyup.enter="addNewTodo()"
       />
       <small id="toDoHelp" class="form-text text-muted"
         >Todos you added will be storaged on local.</small
@@ -19,7 +20,7 @@
     </div>
     <div align="center">
       <button
-        type="button"
+        type="submit"
         class="btn btn-outline-success mb-3 w-25 font-weight-bold"
         @click="addNewTodo()"
       >
@@ -38,10 +39,17 @@
         <div class="btn-group">
           <button
             class="btn btn-outline-warning"
-            v-if="!todo.isDone"
             @click="markDone(todo)"
+            v-if="!todo.isDone"
           >
-            🏆 Done
+          🍕 Done 
+          </button>
+            <button
+            class="btn btn-outline-warning"
+            @click="markDone(todo)"
+            v-if="todo.isDone"
+          >
+          🍔 Undone 
           </button>
           <button class="btn btn-outline-danger" @click="deleteToDo(i)">
             Delete 🗑️
@@ -54,6 +62,7 @@
 
 <script>
 export default {
+  
   data() {
     return {
       newTodo: "",
@@ -77,11 +86,17 @@ export default {
   },
   methods: {
     addNewTodo() {
-      if (this.newTodo == "") {
+      if (this.newTodo == "" || this.newTodo.trim() == "") { // Fix add todo consisting of spaces only.
         this.$toast.open({
           message: "You can not add an empty todo.",
           type: "error",
         });
+      } else if(this.newTodo.length < 2){ // Fix add todo consisting of just one letter.
+        this.$toast.open({
+          message: "You can not add one letter todo.",
+          type: "error",
+        });
+        this.newTodo = ''
       } else {
         this.toDoList.push({
           title: this.newTodo,
@@ -100,13 +115,13 @@ export default {
       }
     },
     markDone(todo) {
-      todo.isDone = true;
+      todo.isDone = !todo.isDone;
     },
     deleteToDo(index) {
       this.toDoList.splice(index, 1);
     },
   },
-};
+}
 </script>
 
 <style lang="scss">
@@ -122,7 +137,8 @@ export default {
   justify-content: space-between;
 }
 .isDone {
-  text-decoration: line-through wavy black;
+  text-decoration: line-through black;
+  text-decoration-style: double;
 }
 span {
   font-size: 24px;
