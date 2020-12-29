@@ -9,8 +9,6 @@ Vue.config.productionTip = false;
 
 Vue.use(VueToast);
 
-
-
 new Vue({
   render: h => h(App),
 }).$mount('#app')
